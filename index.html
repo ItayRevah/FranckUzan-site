@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franck Uzan — Comic Book Cover Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --bg-panel:#141416;
+    --bg-panel-2:#1c1c1f;
+    --yellow:#fecf0d;
+    --yellow-dim:#c9a30a;
+    --white:#f4f2ea;
+    --ink:#0a0a0b;
+    --red:#e0392b;
+    --line:rgba(244,242,234,0.12);
+    --display: 'Anton', 'Arial Narrow', sans-serif;
+    --mono: 'Space Mono', monospace;
+    --body: 'Inter', -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  ::selection{background:var(--yellow); color:var(--ink);}
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:3px solid var(--yellow);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--yellow);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:2px;
+    background:var(--yellow);
+    display:inline-block;
+  }
+
+  /* ---------- halftone texture ---------- */
+  .halftone{
+    background-image: radial-gradient(rgba(254,207,13,0.35) 1.4px, transparent 1.4px);
+    background-size: 14px 14px;
+  }
+
+  /* ---------- jagged claw divider (signature element) ---------- */
+  .claw-divider{
+    width:100%;
+    height:34px;
+    background:var(--yellow);
+    clip-path: polygon(
+      0% 0%, 4% 100%, 8% 20%, 12% 100%, 17% 10%, 22% 100%, 27% 30%, 32% 100%,
+      37% 5%, 42% 100%, 47% 25%, 52% 100%, 57% 15%, 62% 100%, 67% 30%, 72% 100%,
+      77% 10%, 82% 100%, 87% 20%, 92% 100%, 96% 15%, 100% 100%, 100% 0%
+    );
+  }
+  .claw-divider.flip{ transform:rotate(180deg); }
+  .claw-divider.dark{ background:var(--bg-panel-2); }
+
+  /* =============== HEADER =============== */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,10,11,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 32px;
+    max-width:1240px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:12px;
+  }
+  .brand img{
+    height:44px; width:44px;
+    object-fit:cover;
+    border-radius:6px;
+    transform:rotate(-3deg);
+    box-shadow:0 0 0 2px var(--ink), 0 0 0 3px var(--yellow);
+  }
+  .brand-name{
+    font-family:var(--display);
+    font-size:22px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+  }
+  .brand-name span{ color:var(--yellow); }
+
+  .nav-links{
+    display:flex; align-items:center; gap:36px;
+    list-style:none;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .nav-links a{
+    position:relative;
+    padding:4px 2px;
+    color:var(--white);
+    transition:color .2s ease;
+  }
+  .nav-links a::after{
+    content:"";
+    position:absolute; left:0; bottom:-4px;
+    width:0%; height:2px;
+    background:var(--yellow);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover{ color:var(--yellow); }
+  .nav-links a:hover::after{ width:100%; }
+
+  .nav-cta{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:10px 18px;
+    border-radius:2px;
+    font-weight:700;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover{
+    transform:translate(-2px,-2px);
+    box-shadow:3px 3px 0 var(--red);
+  }
+
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px;
+  }
+  .menu-toggle span{
+    width:26px; height:3px; background:var(--white);
+  }
+
+  /* =============== HERO =============== */
+  .hero{
+    position:relative;
+    padding:96px 32px 60px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(254,207,13,0.16) 1.6px, transparent 1.6px);
+    background-size: 18px 18px;
+    mask-image: radial-gradient(ellipse 60% 55% at 50% 30%, black 40%, transparent 80%);
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; max-width:900px; margin:0 auto; }
+
+  .hero-logo{
+    width:150px; height:150px;
+    margin:0 auto 28px;
+    border-radius:14px;
+    object-fit:cover;
+    transform:rotate(-4deg);
+    box-shadow:0 0 0 4px var(--ink), 0 0 0 7px var(--yellow), 14px 14px 0 rgba(254,207,13,0.15);
+    animation: dropIn .7s cubic-bezier(.2,.9,.2,1.2) both;
+  }
+  @keyframes dropIn{
+    from{ opacity:0; transform:rotate(-4deg) translateY(-30px) scale(.85); }
+    to{ opacity:1; transform:rotate(-4deg) translateY(0) scale(1); }
+  }
+
+  .hero h1{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(48px, 9vw, 108px);
+    line-height:0.92;
+    letter-spacing:0.01em;
+  }
+  .hero h1 .line2{
+    color:var(--bg);
+    -webkit-text-stroke: 2px var(--yellow);
+    display:block;
+  }
+
+  .hero-tag{
+    margin:26px auto 8px;
+    max-width:560px;
+    font-family:var(--mono);
+    font-size:15px;
+    letter-spacing:0.04em;
+    color:rgba(244,242,234,0.75);
+  }
+  .hero-tag strong{ color:var(--yellow); font-weight:700; }
+
+  .hero-ctas{
+    margin-top:38px;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:15px 30px;
+    border-radius:2px;
+    font-weight:700;
+    display:inline-block;
+    transition:transform .2s ease, box-shadow .2s ease;
+    border:2px solid var(--yellow);
+  }
+  .btn-solid{
+    background:var(--yellow);
+    color:var(--ink);
+  }
+  .btn-solid:hover{ transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--red); }
+  .btn-outline{
+    background:transparent;
+    color:var(--white);
+  }
+  .btn-outline:hover{ transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--yellow); }
+
+  .hero-stats{
+    margin-top:64px;
+    display:flex;
+    justify-content:center;
+    gap:0;
+    flex-wrap:wrap;
+    border-top:1px solid var(--line);
+    padding-top:28px;
+  }
+  .hero-stats div{
+    padding:0 34px;
+    border-right:1px solid var(--line);
+  }
+  .hero-stats div:last-child{ border-right:none; }
+  .hero-stats b{
+    display:block;
+    font-family:var(--display);
+    font-size:32px;
+    color:var(--yellow);
+  }
+  .hero-stats span{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(244,242,234,0.6);
+  }
+
+  /* =============== SECTION HEAD =============== */
+  .section{ padding:90px 32px; }
+  .section-head{
+    max-width:640px;
+    margin-bottom:52px;
+  }
+  .section-head h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(34px, 5vw, 54px);
+    line-height:1;
+    margin-top:12px;
+  }
+  .section-head p{
+    margin-top:16px;
+    color:rgba(244,242,234,0.68);
+    font-size:16px;
+    max-width:520px;
+  }
+
+  /* =============== GALLERY =============== */
+  .gallery-section{ background:var(--bg-panel); }
+
+  .gallery-filter{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-bottom:36px;
+  }
+  .filter-btn{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    color:rgba(244,242,234,0.75);
+    background:transparent;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .filter-btn:hover{ border-color:var(--yellow); color:var(--yellow); }
+  .filter-btn.active{
+    background:var(--yellow);
+    border-color:var(--yellow);
+    color:var(--ink);
+    font-weight:700;
+  }
+
+  .masonry{
+    columns: 4 220px;
+    column-gap:20px;
+  }
+  @media (max-width:1100px){ .masonry{ columns: 3 200px; } }
+  @media (max-width:720px){ .masonry{ columns: 2 160px; } }
+  @media (max-width:460px){ .masonry{ columns: 1; } }
+
+  .cover-card{
+    break-inside:avoid;
+    margin-bottom:20px;
+    position:relative;
+    border-radius:4px;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 0 0 1px var(--line);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+  }
+  .cover-card:hover{
+    transform:translateY(-6px) scale(1.02);
+    box-shadow:0 18px 34px rgba(0,0,0,0.5), 0 0 0 2px var(--yellow);
+    z-index:2;
+  }
+  .cover-art{
+    width:100%;
+    display:flex; align-items:flex-end;
+    position:relative;
+    color:var(--ink);
+    padding:18px;
+  }
+  .cover-art::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(0,0,0,0.18) 1.2px, transparent 1.2px);
+    background-size: 8px 8px;
+    mix-blend-mode:multiply;
+  }
+  .cover-meta{
+    position:relative; z-index:1;
+  }
+  .cover-issue{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    opacity:.75;
+  }
+  .cover-title{
+    font-family:var(--display);
+    font-size:26px;
+    text-transform:uppercase;
+    line-height:1;
+    margin-top:4px;
+  }
+
+  .cover-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,10,11,0) 40%, rgba(10,10,11,0.92) 100%);
+    display:flex; align-items:flex-end;
+    padding:16px;
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  .cover-card:hover .cover-overlay{ opacity:1; }
+  .cover-overlay span{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--yellow);
+  }
+
+  .gallery-note{
+    margin-top:30px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:rgba(244,242,234,0.45);
+    max-width:600px;
+  }
+
+  /* =============== ABOUT =============== */
+  .about-section{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:64px;
+    align-items:center;
+  }
+  @media (max-width:860px){ .about-section{ grid-template-columns:1fr; } }
+
+  .about-visual{
+    position:relative;
+    aspect-ratio:4/5;
+    border-radius:6px;
+    background:
+      linear-gradient(135deg, var(--bg-panel-2), var(--bg));
+    box-shadow: 10px 10px 0 rgba(254,207,13,0.9), 0 0 0 1px var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .about-visual img{
+    width:64%;
+    filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    transform:rotate(-3deg);
+  }
+  .about-visual::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(254,207,13,0.14) 1.4px, transparent 1.4px);
+    background-size: 16px 16px;
+  }
+
+  .about-copy h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(34px,5vw,50px);
+    line-height:1;
+    margin:12px 0 22px;
+  }
+  .about-copy p{
+    color:rgba(244,242,234,0.75);
+    font-size:16px;
+    margin-bottom:16px;
+    max-width:540px;
+  }
+
+  .skill-tags{
+    display:flex; flex-wrap:wrap; gap:10px;
+    margin-top:28px;
+  }
+  .skill-tags span{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:8px 14px;
+    border:1px solid var(--yellow-dim);
+    border-radius:2px;
+    color:var(--yellow);
+  }
+
+  /* =============== PROCESS STRIP =============== */
+  .process-strip{
+    background:var(--bg-panel-2);
+    padding:60px 32px;
+  }
+  .process-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:760px){ .process-grid{ grid-template-columns:repeat(2,1fr); } }
+  .process-cell{
+    background:var(--bg-panel-2);
+    padding:28px 22px;
+  }
+  .process-cell .num{
+    font-family:var(--mono);
+    color:var(--yellow);
+    font-size:13px;
+  }
+  .process-cell h3{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:20px;
+    margin:10px 0 8px;
+  }
+  .process-cell p{
+    font-size:13.5px;
+    color:rgba(244,242,234,0.62);
+  }
+
+  /* =============== CONTACT =============== */
+  .contact-section{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+  }
+  @media (max-width:860px){ .contact-section{ grid-template-columns:1fr; } }
+
+  .contact-copy h2{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(34px,5vw,50px);
+    line-height:1;
+    margin:12px 0 20px;
+  }
+  .contact-copy p{ color:rgba(244,242,234,0.7); max-width:460px; margin-bottom:28px;}
+
+  .social-list{ list-style:none; display:flex; flex-direction:column; gap:2px; }
+  .social-list a{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 4px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    text-transform:uppercase;
+    font-size:14px;
+    letter-spacing:0.04em;
+    transition:color .2s ease, padding-left .2s ease;
+  }
+  .social-list a:hover{ color:var(--yellow); padding-left:10px; }
+  .social-list a .arrow{ opacity:0; transition:opacity .2s ease; }
+  .social-list a:hover .arrow{ opacity:1; }
+
+  form{ display:flex; flex-direction:column; gap:16px; }
+  .field label{
+    display:block;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(244,242,234,0.6);
+    margin-bottom:8px;
+  }
+  .field input, .field textarea, .field select{
+    width:100%;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    color:var(--white);
+    padding:14px 14px;
+    font-family:var(--body);
+    font-size:14px;
+    border-radius:3px;
+    transition:border-color .2s ease;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    border-color:var(--yellow);
+    outline:none;
+  }
+  .field textarea{ min-height:110px; resize:vertical; }
+
+  .submit-btn{
+    align-self:flex-start;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    background:var(--yellow);
+    color:var(--ink);
+    border:none;
+    padding:15px 30px;
+    border-radius:2px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .submit-btn:hover{ transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--red); }
+
+  .form-status{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--yellow);
+    min-height:18px;
+  }
+
+  /* =============== FOOTER =============== */
+  footer{
+    background:var(--ink);
+    border-top:1px solid var(--line);
+    padding:34px 32px;
+  }
+  .footer-inner{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:rgba(244,242,234,0.5);
+  }
+  .footer-inner a{ color:rgba(244,242,234,0.5); }
+  .footer-inner a:hover{ color:var(--yellow); }
+
+  @media (max-width:820px){
+    .nav-links{
+      position:fixed; top:73px; left:0; right:0;
+      background:var(--bg);
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      border-bottom:1px solid var(--line);
+      max-height:0;
+      overflow:hidden;
+      transition:max-height .3s ease;
+    }
+    .nav-links.open{ max-height:320px; }
+    .nav-links li{ width:100%; }
+    .nav-links a{ display:block; padding:16px 32px; width:100%; }
+    .nav-links a::after{ display:none; }
+    .menu-toggle{ display:flex; }
+    .nav-cta{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="brand" aria-label="Franck Uzan home">
+      <img src="assets/logo.png" alt="Franck Uzan logo">
+      <span class="brand-name">Franck Uzan<span>.</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <a href="#contact" class="nav-cta">Commission Me</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <img src="assets/logo.png" alt="Franck Uzan artist mark" class="hero-logo">
+      <h1>Covers that<span class="line2">claw off the rack</span></h1>
+      <div class="hero-ctas">
+        <a href="#gallery" class="btn btn-solid">View the Gallery</a>
+        <a href="#contact" class="btn btn-outline">Start a Commission</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>120+</b><span>Covers Shipped</span></div>
+        <div><b>14</b><span>Publishers</span></div>
+        <div><b>9</b><span>Yrs in the Ink</span></div>
+        <div><b>3</b><span>Eisner Nods</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="claw-divider" aria-hidden="true"></div>
+
+  <!-- GALLERY -->
+  <section class="section gallery-section" id="gallery">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Selected Covers</div>
+        <h2>The Gallery</h2>
+        <p>A cross-section of published and personal cover work — kaiju smackdowns, cosmic team-ups, and street-level noir.</p>
+      </div>
+
+      <div class="gallery-filter" role="tablist" aria-label="Filter gallery by genre">
+        <button class="filter-btn active" data-filter="all">All Work</button>
+        <button class="filter-btn" data-filter="kaiju">Kaiju</button>
+        <button class="filter-btn" data-filter="hero">Superhero</button>
+        <button class="filter-btn" data-filter="cosmic">Cosmic</button>
+        <button class="filter-btn" data-filter="noir">Noir</button>
+      </div>
+
+      <div class="masonry" id="masonryGrid"></div>
+
+      <p class="gallery-note">Placeholder cover tiles shown above — swap in final artwork by replacing the tile data in the script and dropping images into /assets/covers/.</p>
+    </div>
+  </section>
+
+  <div class="claw-divider dark flip" aria-hidden="true"></div>
+
+  <!-- ABOUT -->
+  <section class="section about-section wrap" id="about">
+    <div class="about-visual">
+      <img src="assets/logo.png" alt="Artist mark">
+    </div>
+    <div class="about-copy">
+      <div class="eyebrow">The Artist</div>
+      <h2>Trained on monsters,<br>raised on newsprint.</h2>
+      <p>Franck Uzan is a cover artist working across superhero, kaiju, and pulp horror titles — building bold, poster-worthy compositions designed to sell an issue in half a second flat on a crowded shelf.</p>
+      <p>The line work is aggressive, the palettes are high-contrast, and every cover is built the way old newsstand books were: one dramatic beat, rendered huge, with zero wasted space.</p>
+      <p>Equally comfortable inking a street-level noir one-shot and painting a 40-foot kaiju tearing through a skyline — the throughline is always energy, silhouette, and impact.</p>
+      <div class="skill-tags">
+        <span>Ink &amp; Line Art</span>
+        <span>Digital Painting</span>
+        <span>Variant Covers</span>
+        <span>Character Design</span>
+        <span>Lettering-safe Layouts</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process-strip">
+    <div class="wrap">
+      <div class="eyebrow" style="margin-bottom:8px;">How a Cover Gets Made</div>
+      <div class="process-grid">
+        <div class="process-cell">
+          <div class="num">01</div>
+          <h3>Thumbnail</h3>
+          <p>Small, fast composition sketches to lock the silhouette and reading order before any detail goes in.</p>
+        </div>
+        <div class="process-cell">
+          <div class="num">02</div>
+          <h3>Layout</h3>
+          <p>Tight pencils with lettering zones marked out so the logo and trade dress never fight the art.</p>
+        </div>
+        <div class="process-cell">
+          <div class="num">03</div>
+          <h3>Ink</h3>
+          <p>Full line work pass — weighted lines, texture, and the claw-mark energy the studio is known for.</p>
+        </div>
+        <div class="process-cell">
+          <div class="num">04</div>
+          <h3>Color</h3>
+          <p>Flat color, then rendering and light effects, finished with a final contrast pass for shelf pop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact-section wrap" id="contact">
+    <div class="contact-copy">
+      <div class="eyebrow">Get In Touch</div>
+      <h2>Open for commissions</h2>
+      <p>Currently booking cover work, variants, and personal commissions for Q4. Publishers, indie creators, and collectors all welcome — tell me about the project below.</p>
+
+      <ul class="social-list">
+        <li><a href="mailto:hello@Franck Uzanink.com"><span>Email — hello@Franck Uzanink.com</span><span class="arrow">→</span></a></li>
+        <li><a href="#" target="_blank" rel="noopener"><span>Instagram — @Franck Uzan.ink</span><span class="arrow">→</span></a></li>
+        <li><a href="#" target="_blank" rel="noopener"><span>X / Twitter — @Franck Uzan.ink</span><span class="arrow">→</span></a></li>
+        <li><a href="#" target="_blank" rel="noopener"><span>ArtStation — Franck Uzan ink</span><span class="arrow">→</span></a></li>
+      </ul>
+    </div>
+
+    <form id="commissionForm" novalidate>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="field">
+        <label for="project">Project Type</label>
+        <select id="project" name="project">
+          <option>Comic Cover</option>
+          <option>Variant Cover</option>
+          <option>Personal Commission</option>
+          <option>Character Design</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Project Details</label>
+        <textarea id="message" name="message" required placeholder="Tell me about the book, deadline, and reference material..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Inquiry</button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© <span id="year"></span> Franck Uzan Studio. All covers property of their respective publishers.</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', false);
+  }));
+
+  // ---- Gallery data (swap these for real cover images) ----
+  const covers = [
+    { title:"Kaiju Rising",   issue:"Issue #01", genre:"kaiju",  h:340, bg:"linear-gradient(160deg,#fecf0d,#c9a30a)" },
+    { title:"Void Sentinel",  issue:"Annual",     genre:"cosmic", h:420, bg:"linear-gradient(160deg,#1c1c1f,#3a3a40)" },
+    { title:"Street Ghost",   issue:"Issue #12", genre:"noir",   h:300, bg:"linear-gradient(160deg,#e0392b,#8c1f16)" },
+    { title:"Iron Maw",       issue:"Issue #04", genre:"hero",   h:380, bg:"linear-gradient(160deg,#fecf0d,#e0392b)" },
+    { title:"Skybreaker",     issue:"Variant B", genre:"cosmic", h:300, bg:"linear-gradient(160deg,#0a0a0b,#fecf0d)" },
+    { title:"Monarch Fall",   issue:"Issue #07", genre:"kaiju",  h:400, bg:"linear-gradient(160deg,#3a3a40,#0a0a0b)" },
+    { title:"Nightbeat",      issue:"One-Shot",  genre:"noir",   h:340, bg:"linear-gradient(160deg,#1c1c1f,#e0392b)" },
+    { title:"Steel Halo",     issue:"Issue #21", genre:"hero",   h:280, bg:"linear-gradient(160deg,#fecf0d,#1c1c1f)" },
+    { title:"Deep Trench",    issue:"Special",   genre:"kaiju",  h:360, bg:"linear-gradient(160deg,#0a0a0b,#3a3a40)" },
+    { title:"Solar Flare",    issue:"Issue #03", genre:"cosmic", h:320, bg:"linear-gradient(160deg,#e0392b,#fecf0d)" },
+    { title:"Alley Cat",      issue:"Issue #09", genre:"noir",   h:380, bg:"linear-gradient(160deg,#3a3a40,#1c1c1f)" },
+    { title:"Hammerfist",     issue:"Variant A", genre:"hero",   h:340, bg:"linear-gradient(160deg,#e0392b,#0a0a0b)" },
+  ];
+
+  const grid = document.getElementById('masonryGrid');
+
+  function renderGallery(filter){
+    grid.innerHTML = "";
+    covers
+      .filter(c => filter === 'all' || c.genre === filter)
+      .forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'cover-card';
+        card.innerHTML = `
+          <div class="cover-art halftone" style="height:${c.h}px; background:${c.bg};">
+            <div class="cover-meta">
+              <div class="cover-issue">${c.issue}</div>
+              <div class="cover-title">${c.title}</div>
+            </div>
+          </div>
+          <div class="cover-overlay"><span>View Full Cover →</span></div>
+        `;
+        grid.appendChild(card);
+      });
+  }
+  renderGallery('all');
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery(btn.dataset.filter);
+    });
+  });
+
+  // ---- Contact form (front-end only demo) ----
+  const form = document.getElementById('commissionForm');
+  const status = document.getElementById('formStatus');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if(!form.checkValidity()){
+      status.textContent = "Please fill in all required fields.";
+      return;
+    }
+    status.textContent = "Thanks — your inquiry has been queued. I'll reply within 2–3 days.";
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
